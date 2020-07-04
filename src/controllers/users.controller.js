@@ -1,8 +1,7 @@
 const Users = require("../models/users");
 const bcrypt = require("bcrypt");
 exports.create = (req, res) => {
-  // Validate request
-  console.log(req.body);
+ 
   if (!req.body.username || !req.body.password) {
     res.status(400).send({
       message: "Content can not be empty!",
@@ -17,15 +16,41 @@ exports.create = (req, res) => {
     Users.create(user, (err, data) => {
       if (err)
         res.status(500).send({
-          message:
-            err.message + " Some error occurred while creating the Customer.",
+          message:err,
         });
-      else res.send(data);
+      else {
+            var nodemailer = require('nodemailer');
+            var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user: 'commhub100@gmail.com',
+              pass: 'Sunny@123'
+            }
+          });
+          
+          var mailOptions = {
+            from: 'commhub100@gmail.com',
+            to: req.body.username,
+            subject: 'Community Hub - Verify Email',
+            text: 'Hello There, Your verification code is - '+data.otp
+          };
+          
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+        
+        res.send(data.message);
+        
+      }
     });
   });
 };
 
-exports.auth = async (req, res) => {
+exports.auth = (req, res) => {
   if (!req.body.username || !req.body.password) {
     res.status(400).send({
       message: "Content can not be empty!",
@@ -42,6 +67,71 @@ exports.auth = async (req, res) => {
         message: err,
       });
     }
-    res.send(data.row);
+    else res.send(data);
   });
 };
+
+exports.forgot = (req,res) =>{
+   
+   if (!req.body.username) {
+    res.status(400).send({
+      message: "Content can not be empty!",
+    });}
+    
+  
+    Users.forgot(req.body.username, (err,data)=>{
+      if(err)
+        res.status(500).send({Error:err});
+      else{
+            var nodemailer = require('nodemailer');
+            var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user: 'commhub100@gmail.com',
+              pass: 'Sunny@123'
+            }
+              });
+              
+              var mailOptions = {
+                from: 'commhub100@gmail.com',
+                to: req.body.username,
+                subject: 'Community Hub - Forgot Password',
+                text: 'Hello There, Your password reset link is - '+data.password
+              };
+              
+              transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                  console.log(error);
+                } else {
+                  console.log('Email sent: ' + info.response);
+                }
+              });
+        res.send({DATA:data.message});
+      }
+    })
+    
+  }
+
+
+
+exports.verify = (req,res)=>{
+  if (!req.body.username || !req.body.otp) {
+    res.status(400).send({
+      message: "Content can not be empty!",
+    });
+  }
+  
+  Users.verify(req.body.username,req.body.otp,(err,data)=>{
+    if(err){
+      console.log("OTP Didn't Match")
+      res.status(500).send({message:err});
+    }
+    else{
+      console.log("OTP Verified");
+      res.send({data:data});
+    }
+  })
+  
+  
+}
+

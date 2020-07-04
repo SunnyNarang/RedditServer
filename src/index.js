@@ -16,8 +16,11 @@ app.get("/", (req, res) => {
 });
 
 require("./routes/userRoute")(app);
+require("./routes/profileRoute")(app);
+require("./routes/communityRoute")(app);
+require("./routes/commentsRoute")(app);
 
 // set port, listen for requests
-app.listen(3000, () => {
-  console.log("Server is running on port 3000.");
+app.listen(4000, () => {
+  console.log("Server is running on port 4000.");
 });
