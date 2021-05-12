@@ -30,7 +30,7 @@
     "ngrok": "^3.2.7",
     "node-pre-gyp": "^0.15.0",
     "node-uuid": "^1.4.8",
-    "nodemailer": "^6.4.10",
+    "nodemailer": "^6.4.16",
     "nodemon": "^2.0.4",
     "swagger-ui-express": "^2.0.13",
     "sync-request": "^4.0.2"
