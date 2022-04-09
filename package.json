@@ -23,7 +23,7 @@
     "body-parser": "1.7.0",
     "express": "^4.8.7",
     "jsonwebtoken": "^7.4.3",
-    "moment": "^2.27.0",
+    "moment": "^2.29.2",
     "moment-timezone": "^0.5.13",
     "mongoose": "^5.1.1",
     "mysql": "^2.18.1",
